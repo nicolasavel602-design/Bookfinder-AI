@@ -1,4 +1,4 @@
-# 📚 BookFinder AI
+# BookFinder AI
 
 A full-stack book discovery web application built using **React, TypeScript, Java and Spring Boot**, featuring book searches and an early implementation of AI-powered recommendations.
 
