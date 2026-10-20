@@ -1,75 +1,193 @@
-# React + TypeScript + Vite
+# 📚 BookFinder AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack book discovery web application built using **React, TypeScript, Java and Spring Boot**, featuring book searches and an early implementation of AI-powered recommendations.
 
-Currently, two official plugins are available:
+The application integrates the Open Library API to retrieve book information and uses Groq AI to interpret users' reading preferences.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Screenshots
 
-## Expanding the ESLint configuration
+### Home Page
+![BookFinder AI Home Page](screenshots/homepage.png)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Book Search Results
+![Book Search Results](screenshots/search-results.png)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### AI Recommendations
+![AI-Assisted Book Recommendations](screenshots/ai-recommendations.png)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Book Search
+- Search for books by title, author or keyword.
+- Display book titles, authors, descriptions and cover images.
+- Retrieve book information from Open Library through a Spring Boot backend.
+- Display results dynamically using reusable React components.
+- Handle loading states and API request errors.
 
+### AI-Powered Book Recommendations (Partially Implemented)
+- Users can describe their reading preferences in natural language.
+- A Groq-hosted AI model converts these preferences into relevant book-search keywords.
+- The generated keywords are passed to the Open Library API to retrieve matching books.
+- **Current limitation:** The retrieved books are not yet ranked by relevance to the user's preferences. The current implementation relies on Open Library's search results rather than an AI-based ranking system.
+
+## Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| React | Frontend user interface |
+| TypeScript | Type-safe frontend development |
+| Java | Backend programming |
+| Spring Boot | REST API development |
+| Groq API | AI-assisted search query generation |
+| Open Library API | Book data retrieval |
+| HTML & CSS | Website structure and styling |
+| Git & GitHub | Version control |
+
+## How It Works
+
+### Book Search
+
+1. The user enters a title, author or keyword.
+2. React sends an HTTP request to the Spring Boot backend.
+3. The backend requests book data from Open Library.
+4. The backend processes the response and returns a list of book objects as JSON.
+5. React displays the results using reusable components.
+
+### AI Recommendations
+
+1. The user describes their reading preferences.
+2. React sends the preferences to the `/api/recommendations` endpoint.
+3. The Spring Boot backend passes the preferences to Groq AI.
+4. The AI generates keywords based on the user's preferences.
+5. The backend searches Open Library using those keywords.
+6. Matching books are returned to the frontend.
+
+**Planned improvement:** Introduce a ranking system that evaluates retrieved books against the original user preferences and orders recommendations by relevance.
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js and npm
+- Java JDK 17+
+- Git
+- Groq API key (required for AI recommendations)
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/bookfinder-ai.git
+cd bookfinder-ai
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Configure the Groq API Key
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Create a Groq API key through the [Groq Console](https://console.groq.com/).
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+The backend reads the key from an environment variable named `GROQ_API_KEY`.
 
+On Windows PowerShell:
+
+```powershell
+$env:GROQ_API_KEY = "YOUR_API_KEY"
 ```
+
+Keep API keys private and never commit them to GitHub.
+
+### 3. Start the Backend
+
+Navigate to the backend directory:
+
+```bash
+cd backend
+```
+
+On Windows:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+On macOS or Linux:
+
+```bash
+./mvnw spring-boot:run
+```
+
+The backend runs at `http://localhost:8080` by default.
+
+### 4. Start the Frontend
+
+Open a second terminal in the project root.
+
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173` in your browser.
+
+## API Endpoints
+
+| Endpoint | Description |
+|---|---|
+| `GET /api/books?query=...` | Search for books |
+| `GET /api/recommendations?query=...` | Generate AI-assisted search terms and retrieve matching books |
+
+## Project Structure
+
+```text
+bookfinder-ai/
+├── backend/
+│   ├── src/main/java/com/bookfinder/backend/
+│   │   ├── Book.java
+│   │   ├── HelloController.java
+│   │   ├── RecommendationController.java
+│   │   └── RecommendationService.java
+│   ├── pom.xml
+│   └── mvnw.cmd
+├── src/
+│   ├── components/
+│   ├── App.tsx
+│   └── main.tsx
+├── public/
+├── package.json
+└── README.md
+```
+
+## Key Learning Outcomes
+
+Through developing this project, I gained experience in:
+
+- Building full-stack applications using React and Spring Boot.
+- Creating REST API endpoints using Java.
+- Using TypeScript interfaces to structure frontend data.
+- Making asynchronous HTTP requests and processing JSON responses.
+- Integrating external APIs and AI services.
+- Managing application state using React hooks.
+- Handling API errors and configuring environment variables.
+- Understanding client-server communication and CORS.
+
+## Current Limitations
+
+- AI-assisted recommendations do not yet rank books by relevance.
+- Recommendation quality depends on the keywords generated by the AI model and Open Library's search results.
+- The recommendation feature requires a valid Groq API key.
+- User accounts and persistent reading lists have not been implemented.
+
+## Future Improvements
+
+- **AI Recommendation Ranking:** Score and rank books according to how closely they match user preferences.
+- **Personalised Recommendations:** Consider reading history, favourite genres and previous searches.
+- **Reading Lists:** Allow users to save books they want to read.
+- **User Authentication:** Introduce individual accounts.
+- **Database Integration:** Store user preferences and reading lists.
+- **Deployment:** Make the application accessible online.
+
+## Project Background
+
+BookFinder AI was developed as a personal full-stack software engineering project combining my interest in reading with programming.
+
+It demonstrates practical experience with React, TypeScript, Java, Spring Boot, REST APIs and AI integration, while providing a foundation for building a more advanced recommendation system.
